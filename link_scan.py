@@ -46,6 +46,21 @@ def is_valid_url(url: str) -> bool:
     return True
 
 
+def invalid_urls(urllist: List[str]) -> List[str]:
+    """Validate the urls in urllist and return a new list containing
+    the invalid or unreachable urls.
+    Args:
+        urllist(List[str]): The List of urls which will check.
+    Returns:
+        List[str]: A new list of the invalid or unreachable urls.
+    """
+    list_badlink = []
+    for url in urllist:
+        if not is_valid_url(url):
+            list_badlink.append(url)
+    return list_badlink
+
+
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print('Usage: python3 link_scan.py url')
