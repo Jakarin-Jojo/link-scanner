@@ -1,12 +1,12 @@
+import os
 from typing import List
 from urllib import request
 from urllib.error import HTTPError, URLError
 
-from selenium.webdriver.remote.webelement import WebElement
+
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 import sys
 
 
@@ -38,8 +38,8 @@ def is_valid_url(url: str) -> bool:
        """
     try:
         request.urlopen(url)
-    except HTTPError:
-        if HTTPError.code != 403:
+    except HTTPError as e:
+        if e.getcode() != 403:
             return False
     except URLError:
         return False
@@ -63,8 +63,17 @@ def invalid_urls(urllist: List[str]) -> List[str]:
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print('Usage: python3 link_scan.py url')
+        filename = os.path.basename(sys.argv[0])
+        print(f'Usage: python3 {filename} url\n\nTest all hyperlinks on the given url.')
         sys.exit()
-    browser: WebDriver = webdriver.Chrome('C:/ISP/chromedriver')
+    PATH = 'C:/ISP/chromedriver.exe'
+    browser: WebDriver = webdriver.Chrome(PATH)
     url = sys.argv[1]
-    link = get_links(url)
+    list_link = get_links(url)
+    list_bad_link = invalid_urls(list_link)
+    print('Show The list of Good link.')
+    for url in list_link:
+        print(url)
+    print('Show The list of Bad link.')
+    for url in list_bad_link:
+        print(url)
