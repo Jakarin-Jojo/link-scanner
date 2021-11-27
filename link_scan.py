@@ -1,10 +1,12 @@
 from typing import List
+from urllib import request
+from urllib.error import HTTPError, URLError
+
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-import urllib
 import sys
 
 
@@ -26,6 +28,22 @@ def get_links(url: str) -> list:
                 temp_link = temp_link.split('?')[0]
             set_hyperlink.add(temp_link)
     return list(set_hyperlink)
+
+
+def is_valid_url(url: str) -> bool:
+    """Check if the url is valid and reachable or not.
+
+       Returns:
+           True if the URL is OK, False otherwise.
+       """
+    try:
+        request.urlopen(url)
+    except HTTPError:
+        if HTTPError.code != 403:
+            return False
+    except URLError:
+        return False
+    return True
 
 
 if __name__ == "__main__":
