@@ -1,12 +1,12 @@
 import os
 from typing import List
-from urllib import request
+import urllib
+import urllib.request
 from urllib.error import HTTPError, URLError
 
-
-from selenium.webdriver.remote.webdriver import WebDriver
-from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
+import chromedriver_binary
 import sys
 
 
@@ -16,8 +16,11 @@ def get_links(url: str) -> list:
         a list of all unique hyperlinks on the page,
         without page fragments or query parameters.
     """
+    my_option = Options()
+    my_option.headless = True
+    browser = webdriver.Chrome(options=my_option)
     browser.get(url)
-    link_list = browser.find_element(By.TAG_NAME, 'a')
+    link_list = browser.find_elements_by_tag_name("a")
     set_hyperlink = set()
     for link in link_list:
         temp_link = link.get_attribute('href')
@@ -37,7 +40,7 @@ def is_valid_url(url: str) -> bool:
            True if the URL is OK, False otherwise.
        """
     try:
-        request.urlopen(url)
+        urllib.request.urlopen(url)
     except HTTPError as e:
         if e.getcode() != 403:
             return False
@@ -66,8 +69,6 @@ if __name__ == "__main__":
         filename = os.path.basename(sys.argv[0])
         print(f'Usage: python3 {filename} url\n\nTest all hyperlinks on the given url.')
         sys.exit()
-    PATH = 'C:/ISP/chromedriver.exe'
-    browser: WebDriver = webdriver.Chrome(PATH)
     url = sys.argv[1]
     list_link = get_links(url)
     list_bad_link = invalid_urls(list_link)
